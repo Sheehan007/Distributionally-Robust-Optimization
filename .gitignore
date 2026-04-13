@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.DS_Store
+smoke_outputs/
+smoke_outputs_full/
