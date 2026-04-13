@@ -26,6 +26,46 @@ The central research question is:
 
 > Can a portfolio that combines neural state estimation, Heston structure, and Wasserstein-distributionally robust mean-CVaR optimization deliver stronger tail protection under regime shifts than simpler baselines?
 
+## The Story of the Project
+
+This repository is easiest to understand as a story rather than as a stack of isolated files.
+
+The project started with a straightforward but important observation: before making a robust portfolio decision, we first need a believable model of how market uncertainty behaves. That is why the early part of the work focused on the **Heston stochastic-volatility model**. Instead of treating volatility as fixed, the model allows it to evolve through time:
+
+`dS_t = mu_t S_t dt + sqrt(v_t) S_t dW_t^S`
+
+`dv_t = kappa_t (theta_t - v_t) dt + sigma_{v,t} sqrt(v_t) dW_t^v`
+
+with correlation between the price shock and the volatility shock. In practical terms, this lets the model express ideas that traders and risk managers actually care about: **volatility clustering**, **mean reversion in variance**, and the **leverage effect** where falling prices are associated with rising volatility.
+
+Once the Heston simulations were plotted, the first financial intuition became clear. The asset-price paths were not smooth, evenly spaced geometric Brownian-motion paths. Some widened dramatically, some stayed calm, and the variance process spiked in bursts. That visual behavior mattered because it showed that the model could represent stress periods instead of pretending every day looks average. The density plots pushed the story further: under negative price-volatility correlation, the left tail became meaningfully heavier. In other words, the model naturally produced the kind of crash asymmetry that motivates distributionally robust optimization in the first place.
+
+The implied-volatility smile reinforced that message. Higher implied volatility at lower strikes means the market prices downside risk more aggressively than upside risk. In the presentation, that became an important turning point: the project was no longer just about forecasting a return, but about understanding why tail-risk-aware decisions are necessary in equity markets.
+
+The next chapter of the story was a failed idea, and that failure was useful. A direct LSTM was trained to predict next-day returns from recent returns and volatility. The result was not impressive: the model mostly converged to the mean. That was not just a machine-learning inconvenience; it was a conceptual lesson. Next-day returns are noisy and weakly predictable, so using a neural network as a point-return forecaster was not the right role for it.
+
+That failure changed the direction of the project. Instead of asking the neural network to predict returns directly, the project reframed the network as a **state estimator for next-period volatility**. This shift is central to the current repository. The LSTM is now used to track volatility regimes, not to pretend it can perfectly forecast tomorrow’s return. In the presentation, the training curves and the actual-versus-predicted volatility plots told a much more convincing story: the network tracked major volatility shifts, spikes, and calm periods with much more credibility than the return-prediction setup.
+
+At that point the project became a hybrid system. The neural model supplied an adaptive estimate of the current volatility state, while the Heston layer supplied structural discipline and realistic forward scenarios. This is where the **Feller condition** became part of the narrative rather than a purely technical side note. The model should not produce nonsensical variance dynamics, so the parameterization is constrained to remain theoretically consistent with stochastic-volatility theory:
+
+`2 kappa_t theta_t > sigma_{v,t}^2`
+
+That design choice matters academically because it shows that the machine-learning layer is being used to support the mathematical model, not replace it with an unconstrained black box.
+
+Once the LSTM and Heston components were coupled, the scenario outputs became noticeably more informative. In the presentation, the hybrid tail-risk plots were more dynamic than static Heston. During stressed periods, the hybrid engine produced deeper negative CVaR and sharper movements in the scenario distribution. That was exactly the behavior the project needed: a regime-aware engine that reacts when the market environment changes instead of leaving the scenario distribution frozen.
+
+Only after reaching that point does the final chapter make sense: **distributionally robust portfolio optimization**. The project does not stop at generating scenarios and measuring CVaR. It asks a harder question: if the predictive distribution itself may be wrong, what portfolio should be chosen under a neighborhood of plausible distributions? That is why the optimization layer uses a Wasserstein ambiguity set and solves a robust mean-CVaR problem instead of trusting the estimated distribution literally.
+
+So the story of the repository is a progression:
+
+1. start with stochastic-volatility intuition,
+2. learn why direct return prediction is too weak,
+3. re-purpose the neural model as a volatility state estimator,
+4. combine that state estimate with Heston structure to generate better scenarios,
+5. use DRO to make the final portfolio decision robust to distributional misspecification.
+
+This progression is important because it explains *why* each file exists. The repository is not just a set of modules; it is the record of how the project matured from a simulation exercise into a defensible research workflow.
+
 ## What This Repository Now Covers
 
 The repository closes the main methodological gaps that would otherwise make the project look incomplete:
@@ -190,6 +230,17 @@ For a professor or peer reviewer, the value of this repository is that it makes 
 - the **reporting layer** explains the result.
 
 That structure makes the project easier to critique, defend, and extend.
+
+## Conceptual References From the Presentation
+
+The presentation that motivated this repository draws on several strands of literature:
+
+- Wasserstein distributionally robust optimization, especially work by **Esfahani and Kuhn**.
+- Broader DRO framing and interpretation from **Rahimian and Mehrotra**.
+- Hybrid LSTM-based stock-market modeling ideas from **Botunac, Bosna, and Matetic**.
+- Regime thinking informed by work on **clustering market regimes with the Wasserstein distance**.
+
+These references matter because the repository is trying to connect three traditions at once: stochastic calculus, robust optimization, and data-driven state estimation.
 
 ## Notes
 
