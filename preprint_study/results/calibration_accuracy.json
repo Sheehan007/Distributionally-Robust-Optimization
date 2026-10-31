@@ -1,0 +1,12 @@
+{
+  "fits": 28,
+  "refinements_converged": 28,
+  "fit_beats_fixed": 28,
+  "boundary_fits": 0,
+  "coarse_particles": 512,
+  "refine_particles": 2048,
+  "check_particles": 4096,
+  "check_seeds": 5,
+  "selected_original_start": 5,
+  "parameter_display_significant_figures": 2
+}

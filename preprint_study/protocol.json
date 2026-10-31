@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "purpose": "Selective review and reproducible computational study of DRO under stochastic volatility",
+  "design_fixed_before_v2_results": "2026-10-31",
+  "prior_period_status": "A preliminary single-asset analysis over 2019-2024 motivated the design; this period is exploratory.",
+  "confirmation_year": 2025,
+  "tickers": [
+    "SPY",
+    "IWM",
+    "TLT",
+    "GLD"
+  ],
+  "data_start": "2012-01-01",
+  "data_end_exclusive": "2026-01-01",
+  "evaluation_years": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "proxy_window": 21,
+  "sequence_length": 20,
+  "hidden_size": 16,
+  "seeds": [
+    7,
+    17,
+    27
+  ],
+  "epochs": 40,
+  "patience": 6,
+  "learning_rate": 0.001,
+  "batch_size": 64,
+  "residual_target": "next-day log rolling volatility minus current log rolling volatility; zero-initialized output head; epoch zero equals persistence",
+  "validation_gate_grid": [
+    0,
+    0.25,
+    0.5,
+    0.75,
+    1
+  ],
+  "forecast_validation": "one preceding calendar year, selected using target availability, no test tuning",
+  "heston_calibration": "annual bounded multistart simulated likelihood of daily Euler Heston return/state model under physical measure; trailing 756 returns plus 63-day conditioning warmup",
+  "calibration_window": 756,
+  "calibration_warmup": 63,
+  "particles_fit": 512,
+  "particles_refine": 2048,
+  "particles_check": 4096,
+  "calibration_max_evaluations_coarse": 1200,
+  "calibration_max_evaluations_refine": 600,
+  "parameter_bounds": {
+    "kappa": [
+      0.2,
+      30
+    ],
+    "theta": [
+      0.001,
+      0.5
+    ],
+    "xi_feller_ratio": [
+      0.05,
+      0.98
+    ],
+    "rho": [
+      -0.95,
+      0.95
+    ]
+  },
+  "drift": "annual log-return mean plus half sample annual variance, fitted on calibration history, no forward returns",
+  "correlation": "252-day return correlation, 10 percent shrinkage to identity, price shocks correlated; independent residual variance shocks",
+  "horizon_days": 5,
+  "scenario_count": 2000,
+  "substeps_per_day": 4,
+  "alpha": 0.95,
+  "gamma": 0.05,
+  "quadratic_risk_lambda": 4.0,
+  "covariance_ridge": "5 percent of average diagonal added to nominal scenario covariance",
+  "primary_constraints": "long-only, sum risky weights = 1, no asset caps",
+  "secondary_constraints": "long-only, sum risky weights <= 1, remainder in cash",
+  "cash_annual": 0.03,
+  "transaction_cost": 0.0007,
+  "fixed_epsilon": 0.0001,
+  "adaptive_epsilon": "0.1 * sqrt(5/252) * Euclidean norm of per-asset products (forecast volatility * validation log-volatility RMSE)",
+  "ground_metric": "Euclidean distance on vector five-day simple returns; CVaR penalty epsilon*norm2(w)/(1-alpha)",
+  "sensitivity_epsilon": [
+    0,
+    5e-05,
+    0.0001,
+    0.00025,
+    0.0005
+  ],
+  "sensitivity_lambda": [
+    0,
+    1,
+    4,
+    10
+  ],
+  "cost_sensitivity": [
+    0,
+    0.0007,
+    0.0014
+  ],
+  "sensitivity_period": "2025 only; declared descriptive grid, no selection of a new primary specification",
+  "bootstrap_replicates": 2000,
+  "bootstrap_block_days": 20,
+  "original_fixed_parameters": [
+    3,
+    0.04,
+    0.35,
+    -0.7
+  ],
+  "interpretation": "Approximate Euler simulated likelihood is not exact continuous-time MLE or option calibration. Residual architecture/gating does not guarantee test dominance. Statistical findings are descriptive.",
+  "likelihood_objective_seeds": 2,
+  "likelihood_check_seeds": 5,
+  "calibration_xtol_coarse": 0.0001,
+  "calibration_xtol_refine": 1e-05,
+  "calibration_ftol": 1e-06,
+  "numerical_accuracy_extension": "Tighter search and paired 20000-scenario experiments after diagnosing finite-particle and line-search effects; economic coefficients unchanged.",
+  "paired_scenarios": 20000,
+  "paired_seed_offsets": [
+    0,
+    10000,
+    20000
+  ],
+  "allocator": "Full-scenario CVaR tail separation; objective contribution of tail underestimation at most 1e-10; independent epigraph checks."
+}

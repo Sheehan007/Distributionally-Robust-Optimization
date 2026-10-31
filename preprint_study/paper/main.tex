@@ -1,0 +1,38 @@
+\ifdefined\XeTeXversion\else\pdfoutput=1\fi
+\documentclass[10pt,twocolumn]{article}
+\usepackage[letterpaper,margin=0.72in,columnsep=0.27in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{newtxtext,newtxmath}
+\usepackage{booktabs,graphicx,microtype,url,array,enumitem,tikz,placeins,balance,float}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Distributionally Robust Portfolio Choice under Stochastic Volatility: A Review and Reproducible Multi-Asset Study},pdfauthor={Sheehan Mathur}}
+\setlength{\parindent}{1em}
+\setlength{\textfloatsep}{11pt plus 2pt minus 2pt}
+\setlength{\belowcaptionskip}{3pt}
+\raggedbottom
+\setcounter{dbltopnumber}{3}
+\renewcommand{\dbltopfraction}{0.9}
+\renewcommand{\textfraction}{0.08}
+\setlist{nosep,leftmargin=*}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\CVaR}{\operatorname{CVaR}}
+\newcommand{\W}{\mathcal{W}}
+\title{\bfseries Distributionally Robust Portfolio Choice under Stochastic Volatility\\[3pt]\Large A Review and Reproducible Multi-Asset Study}
+\author{Sheehan Mathur\\[5pt]\normalsize Department of Computer Science and Engineering\\\normalsize Birla Institute of Technology and Science Pilani, Dubai Campus\\\normalsize\texttt{f20240212@dubai.bits-pilani.ac.in}}
+\date{}
+\begin{document}
+\maketitle
+\input{introduction}
+\input{literature}
+\input{methods}
+\input{results}
+\input{discussion}
+\input{appendices}
+\FloatBarrier
+\balance
+\bibliographystyle{unsrt}
+\begingroup\small\raggedright\bibliography{references}\endgroup
+\end{document}

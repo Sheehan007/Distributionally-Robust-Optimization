@@ -1,0 +1,12 @@
+{
+  "mathematical_timing_tests": 10,
+  "tests_passed": 10,
+  "gate_audits": 28,
+  "checkpoint_replay": "All four panels identical; 1759 rows each",
+  "canonical_input_hashes": 5,
+  "model_checkpoints": 168,
+  "annual_fits": 28,
+  "full_epigraph_cases": 8,
+  "public_provider_observations": false,
+  "protocol_sha256": "04639f18cce0c5824d46122a62f17423a12430a65e920ebf84fa0db68057f985"
+}

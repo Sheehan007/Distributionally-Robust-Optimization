@@ -1,0 +1,148 @@
+\section{Forecasts and calibration}
+\subsection{Information, target, and baselines}
+Let $\mathcal F_t$ contain observations available after day $t$ closes. For daily log returns $r_t$, define the 21-day annualized volatility proxy and its next observation by
+\begin{equation}
+s_t=\sqrt{252}\operatorname{sd}_0(r_{t-20},\ldots,r_t),\qquad y_t=\log s_{t+1},
+\end{equation}
+where the standard deviation uses divisor 21. This is a rolling close-return proxy, not an intraday realized-volatility estimator. Adjacent windows share 20 observations. Consequently, persistence, $\widehat y_t=\log s_t$, is a demanding but necessary benchmark.
+
+A further baseline accounts for the known observation leaving the window. Put $n=21$, $x=r_{t-20}$, $S=\sum_{j=0}^{20}r_{t-j}-x$, and $A=\sum_{j=0}^{20}r_{t-j}^2-x^2$. Let $m$ and $b$ be the current window's mean and mean square, interpreted as conditional estimates of $\E_t r_{t+1}$ and $\E_t r_{t+1}^2$. The expected updated population variance is
+\begin{equation}
+\widehat v^{\rm upd}_{t+1}=\frac{A+b}{n}-\frac{S^2+2Sm+b}{n^2}.
+\label{eq:update}
+\end{equation}
+The window-update forecast is $\tfrac12\log(252\widehat v^{\rm upd}_{t+1})$, with a numerical positivity floor. Equation~\eqref{eq:update} is an elementary conditional-moment calculation. It tests whether an apparent neural improvement mainly recovers the window's mechanical update.
+
+Other comparators are EWMA with decay 0.94 and a HAR-type OLS regression on the current log proxy and its 5- and 22-day averages. This regression borrows the horizon structure of HAR-RV \cite{corsi}; its data and estimator differ from intraday HAR-RV.
+
+\subsection{Persistence-anchored residual LSTM}
+The residual target and forecast are
+\begin{align}
+\Delta_t&=\log s_{t+1}-\log s_t,\\
+\widehat y_t^{\rm res}&=\log s_t+g_y f_\varphi(X_{t-19:t}),\qquad
+g_y\in\{0,\tfrac14,\tfrac12,\tfrac34,1\}.
+\label{eq:residual}
+\end{align}
+The LSTM learns changes rather than reconstructing the volatility level. Its linear correction head starts at zero, so the initial network exactly reproduces persistence. That checkpoint remains eligible during early stopping. For each annual refit, the mean correction of three seeded networks is shrunk by $g_y$, chosen using the preceding validation year only.
+
+Including $g_y=0$ guarantees that the selected ensemble's validation MSE is no larger than persistence MSE on those same validation observations. It does \emph{not} guarantee better test loss. Both the unshrunk residual ensemble and the selected forecast are reported, so the role of validation shrinkage remains visible.
+
+The six input features are log return, log rolling volatility, the 20-day mean return, log VIX in decimal units, the outgoing return $r_{t-20}$, and its square. Including the outgoing observation gives the network access to information needed for \eqref{eq:update}. It is available at time $t$ and introduces no future return. A separate level LSTM uses the same features, sequence length, hidden dimension, optimizer, and chronological splits, but predicts $y_t$ directly. It is an ablation; the main neural comparison is the residual model against simple forecasts.
+
+Each network has one 16-unit recurrent layer and a linear output, totaling 1,553 trainable parameters. We use Adam with learning rate $10^{-3}$, batch size 64, gradient clipping at norm 1, and at most 40 epochs. Six non-improving epochs trigger stopping. Seeds are 7, 17, and 27. Features are standardized on training data. Level targets use training mean and standard deviation; residual targets are scaled by their training standard deviation without mean centering, preserving the identity at zero output.
+
+For test year $y$, training labels must be available before 1 January $y-1$. Labels observed during year $y-1$ supply validation. Splits use label availability dates, preventing the last training observation from using a future validation target. Previously observed evaluation outcomes may enter later annual fits once historically available.
+
+\subsection{Physical Heston likelihood}
+For asset $j$, the physical-measure dynamics are
+\begin{align}
+dS_{j,s}&=\mu_j S_{j,s}\,ds+\sqrt{v_{j,s}}S_{j,s}\,dW^S_{j,s},\\
+dv_{j,s}&=\kappa_j(\theta_j-v_{j,s})\,ds+\xi_j\sqrt{v_{j,s}}\,dW^v_{j,s},\\
+d\langle W^S_j,W^v_j\rangle_s&=\rho_j\,ds.
+\end{align}
+These are predictive physical parameters, not risk-neutral option parameters. Variance is latent. We do not estimate the CIR parameters by pretending that a smoothed rolling standard deviation is observed instantaneous variance.
+
+Instead, a regularized daily Euler state-space model supplies an approximate likelihood. For $\delta=1/252$ and $v^+=\max(v,10^{-8})$,
+\begin{align}
+r_t\mid v_{t-1}&\sim N\bigl((\mu-\tfrac12v^+)\delta,v^+\delta\bigr),\\
+z_t&=\frac{r_t-(\mu-\tfrac12v^+)\delta}{\sqrt{v^+\delta}},\\
+v_t&=v_{t-1}+\kappa(\theta-v^+)\delta\notag\\
+&\quad+\xi\sqrt{v^+\delta}\{\rho z_t+\sqrt{1-\rho^2}u_t\}.
+\label{eq:conditional_state}
+\end{align}
+Conditional on the observed return and a particle's old variance, $u_t$ is standard normal. This transition retains the leverage coupling rather than propagating variance independently of the observed price shock.
+
+At each date, particles are weighted by the return density, the average density supplies the predictive likelihood increment, and systematic resampling selects parent states. The conditional transition in \eqref{eq:conditional_state} then advances their variances. This follows standard sequential Monte Carlo principles \cite{arulampalam}. The likelihood is for the Euler approximation with a positivity floor. It is not an exact continuous-time Heston likelihood.
+
+Structural parameters are refitted annually from 756 past returns, preceded by 63 conditioning observations. Initialization uses the conditioning window's return variance. The initial 63 likelihood increments are excluded from the estimation criterion. Drift is separately estimated as annualized mean log return plus half the annualized sample variance on the fitting observations. This approximation is held common across scenario ablations.
+
+The bounded search estimates $\kappa,\theta,\beta,\rho$, where
+\begin{equation}
+\xi=\beta\sqrt{2\kappa\theta},\qquad 0.05\leq\beta\leq0.98.
+\end{equation}
+Bounds are $\kappa\in[0.2,30]$, $\theta\in[0.001,0.5]$, and $\rho\in[-0.95,0.95]$. This restriction imposes the continuous-time Feller inequality. It is an estimation constraint, not a consequence inferred from the data, and it does not ensure nonnegative discrete steps without truncation.
+
+Data-dependent starts, an archived likelihood-based warm start from the same fitting window, and the fixed reference are supplemented by a differential-evolution search with 128 particles (population size 24, at most 12 generations). A bounded Powell stage uses 512 particles, two common-random-number seeds, and up to 1,200 function evaluations; refinement uses 2,048 particles, two seeds, and up to 600 evaluations. Parameter tolerances are $10^{-4}$ and $10^{-5}$ in the transformed search coordinates, with objective tolerance $10^{-6}$. All candidates are reevaluated with 4,096 particles and five independent seeds, and the highest mean fitting likelihood is retained. Starting vectors, seeds, budgets, and termination statuses are public. All 28 refinement stages report convergence. This is a numerical termination result, not a certificate of a global likelihood maximum.
+
+Resampling makes a finite-particle likelihood nonsmooth in the parameters. Line searches can retain bracket trial values, and a numerically converged fit need not identify all parameters precisely. We therefore display estimates to two significant figures. Full computational values are archived for replication; their digits and likelihood seed variation are not parameter confidence intervals. Including the fixed reference among candidates makes nonnegative fitting-score improvement possible by construction; predictive log scores provide the separate evaluation.
+
+For each test year, parameters are fixed at its start and the filter updates states using returns observed during that year. One-step predictive log scores against a fixed-parameter reference assess whether estimation improves prediction outside the fitting window. Estimates are never selected by those test scores.
+
+\section{Joint scenarios and portfolio choice}
+\subsection{Scenario construction and ablations}
+The universe comprises SPY, IWM, TLT, and GLD, covering broad U.S. equity, small-cap equity, long-duration Treasury exposure, and gold exposure. Each asset has its own fitted Heston parameters. For return dependence, a trailing 252-day correlation matrix $C_t$ is shrunk 10\% toward identity. Correlated price shocks and variance shocks are constructed as
+\begin{equation}
+Z_t\sim N(0,C_t),\qquad
+V_{j,t}=\rho_j Z_{j,t}+\sqrt{1-\rho_j^2}U_{j,t},
+\end{equation}
+with independent $U_{j,t}$. This yields a positive-semidefinite joint shock construction. It does not estimate a general multivariate stochastic-volatility law; residual variance innovations are independent across assets.
+
+The broad model comparison generates 2,000 antithetic scenarios of five-day simple returns per rebalance. The primary matched nominal-versus-DRO experiment uses 20,000 scenarios under each of three independent seeds. Within a seed, the nominal, fixed-radius, and adaptive-radius allocations share the same scenarios and analytic means. The first declared seed supplies the main reporting path; the other seeds assess simulator sensitivity and are not selected by performance. Prices and variances use their common pre-step variance, with four full-truncation substeps per day \cite{lord}. Parameter estimation uses daily Euler increments, whereas simulation refines that grid; the remaining discretization mismatch is a limitation of the approximate calibration.
+
+The primary fitted Heston variants differ only in their initial variance: a filtered latent state, squared persistence proxy, or squared residual forecast. Using a rolling forecast as an instantaneous state remains an approximation. A Gaussian ablation holds residual forecast variances fixed over the horizon. A fixed-parameter ablation uses $(3,0.04,0.35,-0.7)$ for every asset, with the same residual initial state and estimated drifts. Its purpose is to isolate the effect of fitted structural parameters, not to claim that these common constants are a well-calibrated alternative.
+
+All parametric models use the same analytic nominal simple-return means,
+\begin{equation}
+\widehat m_j=\exp(5\widehat\mu_j/252)-1.
+\end{equation}
+Thus changing a variance forecast does not change the nominal mean through Monte Carlo noise. Historical mean--CVaR uses overlapping five-day returns within the last 252 observations. Scenario covariances are estimated from the corresponding nominal scenarios and receive a ridge equal to 5\% of their average diagonal.
+
+\subsection{Multi-asset Wasserstein-CVaR objective}
+Let $R\in\R^4$ denote five-day simple returns and $w\in\R^4$ risky weights. The primary feasible set is
+\begin{equation}
+\W=\{w:w\geq0,\ \boldsymbol1^\top w=1\}.
+\end{equation}
+Every primary strategy therefore holds full ETF exposure. No per-asset cap is imposed. This removes cash allocation as an explanation for differences between model variants.
+
+For the empirical scenario law $\widehat P_N$, use a Wasserstein ball with Euclidean ground distance and radius $\epsilon$. On unrestricted return support, the established linear-loss identity specializes to
+\begin{align}
+\sup_{Q:W_1(Q,\widehat P_N)\leq\epsilon}\CVaR_\alpha^Q(-w^\top R)
+&=\CVaR_\alpha^{\widehat P_N}(-w^\top R)\notag\\
+&\quad+\frac{\epsilon\lVert w\rVert_2}{1-\alpha}.
+\label{eq:vector_dro}
+\end{align}
+Unlike a scalar exposure penalty, the Euclidean norm varies with asset concentration even when total weight is one. A short transport argument appears in Appendix~\ref{app:transport}. The unrestricted support allows impossible simple-return vectors and is used as a conservative stress envelope; imposing lower bounds of $-1$ changes the exact formulation.
+
+The allocation criterion is
+\begin{align}
+\max_{w\in\W}\quad&\widehat m^\top w-\gamma\widehat{\CVaR}_\alpha(-w^\top R)\notag\\
+&-\frac{\gamma\epsilon}{1-\alpha}\lVert w\rVert_2
+-\frac\lambda2w^\top\Omega_t w\notag\\
+&-c\lVert w-w^-\rVert_1,
+\label{eq:allocation}
+\end{align}
+where $\Omega_t$ is the ridged scenario covariance and $w^-$ the marked pretrade weight vector. Only CVaR is robustified; the nominal mean remains empirical or model-implied. With $\lambda>0$ and positive-definite $\Omega_t$, the objective is strictly concave and its optimizer is unique. This removes the scalar piecewise-affine restriction; it does not mathematically guarantee that every optimal weight is positive.
+
+The CVaR epigraph uses a threshold $\eta$ and nonnegative $z_i$ satisfying $z_i\geq-w^\top R_i-\eta$. A second-order cone represents $\lVert w\rVert_2$ and a convex quadratic represents covariance risk. The resulting convex problem is solved with Clarabel through CVXPY. For efficiency, a tail-separation master adds supporting hyperplanes obtained from the full empirical tail. Every separation evaluates all scenarios, including fractional boundary mass. The stopping criterion limits the CVaR-underestimation contribution to the unscaled objective to $10^{-10}$. Utility and tail variables are rescaled for conditioning. We check feasibility, retain solver statuses, and compare this implementation with independent full-epigraph solves (Appendix~\ref{app:reproduction}). The quadratic term is present in every mean--CVaR comparator, so the DRO ablation changes the radius rather than adding curvature only to the favored model.
+
+Primary settings are $\alpha=0.95$, $\gamma=0.05$, $\lambda=4$, and fixed radius $\epsilon=10^{-4}$. The adaptive rule is
+\begin{equation}
+\epsilon_t=0.1\sqrt{5/252}\left\lVert
+\bigl(\widehat\sigma_{j,t+1\mid t}u_{j,y}\bigr)_{j=1}^4
+\right\rVert_2,
+\end{equation}
+where $u_{j,y}$ is the preceding validation year's selected log-volatility RMSE. The rule supplies return units but is heuristic, not a probability coverage calibration. Increasing the number of simulated scenarios reduces simulator sampling error; it does not create new market observations or establish that the true law belongs to this ball.
+
+\subsection{Execution and cash-enabled comparison}
+Forecasts and scenario inputs use information available after close $t$. At the adjusted open of $t+1$, the optimizer uses the marked pretrade weights for its turnover term and rebalances immediately at that mark. This is an idealized opening-price execution convention: it assumes the opening mark can be observed and traded without delay. Holdings remain fixed in units for five open-to-open intervals, with daily marking. Trading costs are seven basis points per unit of risky-asset purchases or sales, measured by $c\lVert w-w^-\rVert_1$. A fully invested transfer between two funds trades both legs. Initial purchases are charged as well.
+
+After deducting the fee from pretrade wealth, the chosen weights allocate post-fee wealth. The optimizer uses a linear fee proxy; realized accounting compounds the fee and subsequent returns exactly. Small interaction terms separate that proxy objective from exact after-cost utility. Buy and hold trades once, while equal weight rebalances on the common schedule.
+
+A secondary experiment permits $\boldsymbol1^\top w\leq1$ and places the remainder in a stylized cash account earning 3\% effective annually. It uses the same models, risk coefficient, covariance penalty, and fees. Reporting this case separately prevents the fixed-exposure experiment from hiding the cash preference that can still arise under estimated premia and CVaR preferences.
+
+\section{Data and evaluation protocol}
+Daily adjusted prices cover 3 January 2012 through 31 December 2025. Open, high, low, and close are multiplied by Yahoo's adjusted-close/close factor \cite{yahoo}. Adjusted opens approximate reinvested total-return performance; they are not historical executable quotes. VIX closes come from Cboe \cite{cboe}, aligned by date and forward-filled without backward filling. No macro series with unmodeled publication lags is used. The author retains the input snapshots locally. The public release provides source URLs and hashes, with a downloader requiring explicit acknowledgment of provider terms; provider observations and raw responses are excluded. Canonical hashes cover the dated price panels and aligned VIX inputs actually used. Provider revisions can prevent exact historical numerical replication; a current-data rerun is identified separately.
+
+Annual fits produce 1,510 forecast observations per asset in 2019--2024 and 249 in 2025. Across the common calendar, the portfolio has 351 complete five-day holding intervals and 1,755 daily net returns marked from 4 January 2019 through 26 December 2025. There are 1,508 returns in the exploratory calendar slice and 247 in confirmation. The incomplete final interval is omitted. Holdings carry across year boundaries; the 2025 slice does not restart the strategy.
+
+Forecast RMSE and MAE use log-volatility units. QLIKE against the rolling proxy is descriptive because proxy properties matter for latent-variance comparisons \cite{patton}. We also report QLIKE against the annualized sum of the next five squared close returns, sampling every fifth forecast so these future target windows do not overlap. The network was not trained for that separate target, so it is a diagnostic rather than an optimal-horizon comparison.
+
+Portfolio reporting includes CAGR, excess-return Sharpe relative to 3\% cash, annualized daily volatility, daily 95\% loss ES, maximum daily drawdown, and risky turnover. Daily realized ES differs from the five-day scenario CVaR in the objective. Diversification is measured by the effective asset count
+\begin{equation}
+N_{\rm eff}=1/\sum_j w_j^2
+\end{equation}
+for fully invested portfolios, and by the fraction of rebalances with at least two weights above $10^{-5}$. Neither statistic substitutes for a dependence-aware risk measure.
+
+Paired stationary-bootstrap summaries use 2,000 draws and mean blocks of 20 daily observations \cite{bootstrap}. The same sampled indices apply to both fitted paths. Five-day quantile diagnostics use mean blocks of four holding intervals. These are unadjusted descriptive percentile intervals; they do not refit models, account for all selection uncertainty, or ensure coverage in nonstationary markets.
+
+Declared sensitivity values are radii of 0, 0.5, 1, 2.5, and 5 basis points of vector return distance; quadratic coefficients 0, 1, 4, and 10; and fees of 0, 7, and 14 basis points. Full historical paths are recomputed so each setting carries its own feasible holdings into 2025, whose metrics are then reported. No setting is selected because of its test performance. Conditional allocation checks use common pretrade weights at both 2,000 and 20,000 scenarios, with three independent seeds at each count. Distances are measured against the first seed at the same count, which avoids attributing variation in a lower-scenario reference to the higher-scenario computation.

@@ -1,0 +1,130 @@
+\section{Results}
+\subsection{Forecast accuracy}
+\begin{table*}[t]
+\centering\small\setlength{\tabcolsep}{4pt}
+\caption{Log-volatility RMSE. Lower is better. Each asset has 1,510 observations during 2019--2024 and 249 during 2025. The raw residual model has no ensemble shrinkage; the gated version uses the previous year's validation observations only.}
+\label{tab:forecast}
+\begin{tabular}{lrrrrrrrr}\toprule
+&\multicolumn{4}{c}{2019--2024 exploratory}&\multicolumn{4}{c}{2025 confirmation}\\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+Forecast&SPY&IWM&TLT&GLD&SPY&IWM&TLT&GLD\\\midrule
+\input{tables/study_forecast.tex}\\\bottomrule
+\end{tabular}
+\end{table*}
+\begin{figure*}[t]
+\centering\includegraphics[width=\textwidth]{figures/study_forecast.pdf}
+\caption{RMSE normalized by persistence, with the dashed line at one. Residual prediction removes much of the direct-level model's disadvantage. The window-update benchmark demonstrates that a substantial part of the gain concerns known rolling-window mechanics.}
+\label{fig:forecast}
+\end{figure*}
+
+Table~\ref{tab:forecast} shows that the main neural comparison is materially different from a poorly performing level forecast. The gated residual model improves exploratory-period RMSE against persistence by 17.5\% for SPY, 16.0\% for IWM, 17.7\% for TLT, and 21.3\% for GLD. The corresponding confirmation improvements are approximately 22.6\%, 27.6\%, 28.5\%, and 21.8\%. Paired bootstrap intervals for residual-minus-persistence MSE lie below zero for all eight asset--period comparisons. These intervals are unadjusted descriptive summaries, not a claim of simultaneous or universal dominance.
+
+The validation gate is one in 24 of the 28 asset--year fits and 0.75 in four. Thus the selected model does not achieve its result merely by reverting to persistence. The raw residual model is already substantially better than persistence; validation shrinkage makes relatively small changes. Reconstructing validation predictions from all saved residual checkpoints confirms that selected validation MSE never exceeds the persistence candidate's MSE.
+
+The result is not evidence that neural complexity is essential. Equation~\eqref{eq:update} beats the selected residual model by RMSE for every asset in 2019--2024. Its residual-minus-update MSE intervals are positive. In 2025 the residual model is slightly better than the update forecast for TLT and GLD and slightly worse for SPY and IWM; all four corresponding difference intervals include zero. Figure~\ref{fig:forecast} therefore supports a narrower conclusion: an identity-anchored architecture is a fairer neural implementation, while simple conditional-moment structure remains highly competitive.
+
+The level LSTM also performs considerably better in the confirmation year than in the exploratory aggregate, and its IWM RMSE is slightly lower than residual RMSE in 2025. This variation discourages a blanket claim that residual learning must outperform all level architectures. The main comparison includes EWMA, HAR-type OLS, and future five-day variation diagnostics in Appendix~\ref{app:forecast}, which distinguish predictability of the smoothed target from forecasting latent or forward risk.
+
+\subsection{Calibration and predictive log scores}
+\begin{table*}[t]
+\centering\small
+\caption{Parameters available at the start of 2025, estimated exclusively from past returns. $\theta$ is annual variance and $\mu$ annual physical drift. The final column is the standard deviation of total fitting log likelihood over five 4,096-particle evaluations; it is numerical variation, not a parameter standard error. Parameters are displayed to two significant figures.}
+\label{tab:calibration}
+\begin{tabular}{lrrrrrr}\toprule
+ETF&$\kappa$&$\theta$&$\xi$&$\rho$&$\mu$&MC log-likelihood SD\\\midrule
+\input{tables/study_calibration.tex}\\\bottomrule
+\end{tabular}
+\end{table*}
+\begin{table*}[t]
+\centering\small
+\caption{Out-of-sample one-day return log scores from the latent-state filters. Higher is better. Difference is fitted minus the legacy fixed-parameter reference. Intervals are paired stationary-bootstrap summaries conditional on the fitted paths.}
+\label{tab:logscores}
+\begin{tabular}{llrrrr}\toprule
+ETF&Period&Fitted&Fixed&Difference&95\% interval\\\midrule
+\input{tables/study_logscores.tex}\\\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:calibration} reports asset-specific estimates available before 2025. Mean reversion ranges from about 0.82 for TLT to 23 for GLD, and return--variance correlation ranges from about $-0.85$ to $0.53$. Complete annual records appear in Appendix~\ref{app:parameters}. No retained fit lies within 1\% of a declared search boundary, but this does not establish parameter identification.
+
+The fixed reference is a feasible candidate in the likelihood comparison. All 28 selected fitting scores exceed its score, so in-sample improvement is not an independent validation of the model. Out-of-sample results in Table~\ref{tab:logscores} are mixed: GLD has a higher mean fitted score in exploration, while SPY, IWM, and TLT have lower scores. In 2025 the fitted score is higher for SPY, TLT, and GLD and lower for IWM. The displayed confirmation intervals exclude zero for SPY and GLD, whereas those for TLT and IWM include zero. The exploratory IWM interval is below zero.
+
+The reference uses common illustrative constants rather than a state-of-the-art likelihood estimator. All comparisons concern an approximate daily Euler model with bounded estimation and finite particles. They do not validate an exact continuous-time density or a market option surface.
+
+\subsection{Fully invested portfolio outcomes}
+\begin{table*}[t]
+\centering\small\setlength{\tabcolsep}{4pt}
+\caption{Broad model comparison with 2,000 scenarios at common unit gross ETF exposure. The higher-precision matched DRO comparison is in Table~\ref{tab:paired}. CAGR, daily loss ES, and maximum drawdown (MDD, positive magnitude) are percentages. SR is excess-return Sharpe against 3\% cash and $N_{\rm eff}$ the average effective ETF count. Calendar slices contain 1,508 and 247 daily returns. Holdings are carried into 2025 rather than restarted.}
+\label{tab:portfolio}
+\begin{tabular}{lrrrrrrrrrr}\toprule
+&\multicolumn{5}{c}{2019--2024 exploratory}&\multicolumn{5}{c}{2025 confirmation}\\
+\cmidrule(lr){2-6}\cmidrule(lr){7-11}
+Strategy&CAGR&SR&ES&MDD&$N_{\rm eff}$&CAGR&SR&ES&MDD&$N_{\rm eff}$\\\midrule
+\input{tables/study_portfolio.tex}\\\bottomrule
+\end{tabular}
+\end{table*}
+\begin{figure*}[t]
+\centering\includegraphics[width=\textwidth]{figures/study_wealth.pdf}
+\caption{Net wealth and daily drawdown at equal total ETF exposure. Nominal and DRO curves use the primary 20,000-scenario seed; equal weight and minimum variance are historical-input references. The vertical line separates the exploratory sample from 2025 confirmation. A single favorable confirmation year does not establish persistent investment superiority.}
+\label{fig:wealth}
+\end{figure*}
+
+The broad model comparison (Table~\ref{tab:portfolio}) is complemented by a matched higher-scenario experiment. The main economic assessment of robustness uses 20,000 scenarios and three independent seeds. All model parameters, expected returns, costs, and preferences are held common within that comparison; only the ambiguity radius differs. Holdings carry through the full historical path for each strategy and seed.
+
+\begin{table*}[t]
+\centering\small\setlength{\tabcolsep}{4pt}
+\caption{Primary matched comparison at 20,000 scenarios, seed offset zero. Units match Table~\ref{tab:portfolio}; other seed outcomes are in Appendix~\ref{app:sensitivity}. The first seed was fixed in advance of this numerical comparison and was not chosen for its return.}
+\label{tab:paired}
+\begin{tabular}{lrrrrrrrrrr}\toprule
+&\multicolumn{5}{c}{2019--2024 exploratory}&\multicolumn{5}{c}{2025 confirmation}\\
+\cmidrule(lr){2-6}\cmidrule(lr){7-11}
+Strategy&CAGR&SR&ES&MDD&$N_{\rm eff}$&CAGR&SR&ES&MDD&$N_{\rm eff}$\\\midrule
+\input{tables/study_paired.tex}\\\bottomrule
+\end{tabular}
+\end{table*}
+
+In the primary 20,000-scenario path, nominal residual Heston earns 11.20\% exploratory CAGR and adaptive DRO 11.21\%. Their daily loss ES values are 1.606\% and 1.598\%. Adaptive DRO's maximum drawdown is 22.25\%, compared with 22.11\% nominally: smaller ES does not mean every realized risk measure improves. The corresponding confirmation CAGRs are 44.06\% and 44.59\%, with ES of 1.911\% and 1.881\%.
+
+Every matched nominal and DRO rebalance in all three seeds holds at least two ETFs above the reporting threshold. Primary adaptive-DRO effective counts average 2.46 during exploration and 1.95 during confirmation, compared with nominal counts of 2.38 and 1.90. No per-asset cap forces these mixtures. Figure~\ref{fig:weights} shows primary-seed weights.
+
+The 2,000-scenario model comparisons describe different scenario specifications rather than determine the main DRO conclusion. Filter-initialized Heston earns 49.91\% confirmation CAGR; historical mean--CVaR earns 61.25\% with greater concentration and tail loss. GLD's 63.7\% calendar return and the historical strategy's mean GLD weight of 90.2\% explain why that latter result is effectively a gold bet. The effective asset count is only 1.21. This is a favorable regime for concentrated gold exposure, not general confirmation of predictive superiority.
+
+Fixed-parameter and Gaussian ablations slightly outperform the fitted residual specification by exploratory CAGR but trail it in confirmation. Estimation and stochastic-volatility dynamics are modeling choices whose economic value remains empirical. The residual forecast's incremental portfolio effect relative to persistence is also small. The broad 2,000-scenario and primary 20,000-scenario CAGRs differ because empirical tail approximations affect the optimizer; their difference motivates the matched higher-scenario comparison rather than a selection of the more favorable run.
+
+\begin{figure*}[t]
+\centering\includegraphics[width=\textwidth]{figures/study_weights.pdf}
+\caption{Primary 20,000-scenario adaptive-DRO weights and effective ETF counts of matched model variants. Total ETF weight is one throughout. Allocations vary over time and hold multiple assets; the primary experiment cannot explain gains through an all-cash position.}
+\label{fig:weights}
+\end{figure*}
+
+\subsection{Uncertainty, cash, and numerical scale}
+\begin{table*}[t]
+\centering\small\setlength{\tabcolsep}{4pt}
+\caption{Robust allocation minus matched nominal residual Heston, at 20,000 scenarios and primary seed zero. Mean-return differences are annualized arithmetic percentage points. Daily ES differences are basis points, with negative values indicating lower tail loss. Intervals are unadjusted paired bootstrap percentiles.}
+\label{tab:bootstrap}
+\begin{tabular}{llrrrr}\toprule
+Period&Robust strategy&Mean diff.&95\% interval&ES diff.&95\% interval\\\midrule
+\input{tables/study_bootstrap.tex}\\\bottomrule
+\end{tabular}
+\end{table*}
+\begin{table*}[t]
+\centering\small
+\caption{Cash-enabled secondary experiment with 2,000 scenarios. CAGR and daily ES are percentages. Gross is mean risky ETF exposure in percent. The remaining wealth earns stylized 3\% annual cash interest. These portfolios solve a different mandate from the fully invested primary experiment.}
+\label{tab:cash}
+\begin{tabular}{lrrrrrr}\toprule
+&\multicolumn{3}{c}{2019--2024 exploratory}&\multicolumn{3}{c}{2025 confirmation}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Strategy&CAGR&ES&Gross&CAGR&ES&Gross\\\midrule
+\input{tables/study_cash.tex}\\\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:bootstrap} shows no statistically reliable return advantage for either robust rule over matched nominal allocation. For adaptive DRO, the exploratory annualized arithmetic mean-return difference is approximately 0.003 percentage points, with interval $[-0.23,0.31]$. In confirmation the difference is 0.35 points, with interval $[-0.72,1.46]$. The primary-seed ES-difference intervals also include zero. These are descriptive, unadjusted intervals conditional on fitted paths.
+
+The other two seeds preserve the direction of the confirmation return difference but do not establish significance. Across seeds, adaptive-minus-nominal mean-return differences range from about 0.08 to 0.35 annual percentage points in 2025; every corresponding interval includes zero. ES point differences are negative in both periods under all seeds. Two exploratory ES intervals exclude zero, whereas the primary interval and all confirmation intervals include zero. We do not select a seed because its interval is more favorable.
+
+The conditional allocation experiment separates this statistical uncertainty from numerical resolution. At 2,000 scenarios, independent-seed adaptive-weight distances average about 0.022, exceeding within-seed robustness tilts of about 0.011--0.012. At 20,000 scenarios, average distances fall to 0.0053--0.0059, below tilts of 0.0128--0.0134 (Appendix~\ref{app:sensitivity}). The 95th-percentile distances remain larger than the mean tilt, so some dates remain more sensitive than average. Higher-scenario sampling resolves a small average allocation effect without supplying evidence of a reliable return improvement.
+
+Cash-enabled results (Table~\ref{tab:cash}) concern a different mandate. Mean exploratory risky exposure is about 38.4\% for residual Heston and 35.2\% for adaptive DRO, with negative CAGRs despite smaller daily ES. In confirmation those risky exposures are about 1.88\% and 0.08\%, respectively. Lower risk largely reflects cash holdings. Negative displayed loss ES is possible when even the average worst-tail daily return is positive in a mostly cash portfolio.
+
+Reference quantiles are imperfect. In the 2,000-scenario experiment, nominal residual-Heston and adaptive-DRO portfolios each breach their reference 5\% return quantile in 23 of 302 exploratory holding intervals (7.62\%) and one of 49 confirmation intervals (2.04\%). A robust objective adjustment does not produce a predictive VaR quantile or guarantee ambiguity-set membership. Radius, quadratic-risk, and fee sensitivities are descriptive grids reported in the appendix; no value is selected by confirmation performance.

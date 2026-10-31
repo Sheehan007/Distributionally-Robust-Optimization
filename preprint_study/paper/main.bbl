@@ -1,0 +1,249 @@
+\begin{thebibliography}{10}
+
+\bibitem{markowitz}
+Harry Markowitz.
+\newblock Portfolio selection.
+\newblock {\em The Journal of Finance}, 7(1):77--91, 1952.
+\newblock \url{https://doi.org/10.1111/j.1540-6261.1952.tb01525.x}.
+
+\bibitem{rockafellar}
+R.~Tyrrell Rockafellar and Stanislav Uryasev.
+\newblock Optimization of conditional value-at-risk.
+\newblock {\em The Journal of Risk}, 2(3):21--41, 2000.
+\newblock \url{https://doi.org/10.21314/JOR.2000.038}.
+
+\bibitem{esfahani}
+Peyman {Mohajerin Esfahani} and Daniel Kuhn.
+\newblock Data-driven distributionally robust optimization using the
+  {Wasserstein} metric: Performance guarantees and tractable reformulations.
+\newblock {\em Mathematical Programming}, 171(1--2):115--166, 2018.
+\newblock \url{https://doi.org/10.1007/s10107-017-1172-1}.
+
+\bibitem{rahimian}
+Hamed Rahimian and Sanjay Mehrotra.
+\newblock Frameworks and results in distributionally robust optimization.
+\newblock {\em Open Journal of Mathematical Optimization}, 3:1--85, 2022.
+\newblock \url{https://doi.org/10.5802/ojmo.15}.
+
+\bibitem{kuhn}
+Daniel Kuhn, Soroosh Shafiee, and Wolfram Wiesemann.
+\newblock Distributionally robust optimization.
+\newblock {\em Acta Numerica}, 34:579--804, 2025.
+\newblock \url{https://doi.org/10.1017/S0962492924000084}.
+
+\bibitem{kuhntutorial}
+Daniel Kuhn, Peyman {Mohajerin Esfahani}, Viet~Anh Nguyen, and Soroosh
+  Shafieezadeh-Abadeh.
+\newblock {Wasserstein} distributionally robust optimization: Theory and
+  applications in machine learning.
+\newblock In {\em Operations Research \& Management Science in the Age of
+  Analytics}, INFORMS TutORials in Operations Research, pages 130--166.
+  INFORMS, 2019.
+\newblock \url{https://doi.org/10.1287/educ.2019.0198}.
+
+\bibitem{delage}
+Erick Delage and Yinyu Ye.
+\newblock Distributionally robust optimization under moment uncertainty with
+  application to data-driven problems.
+\newblock {\em Operations Research}, 58(3):595--612, 2010.
+\newblock \url{https://doi.org/10.1287/opre.1090.0741}.
+
+\bibitem{bental}
+Aharon Ben-Tal, Dick den Hertog, Anja~De Waegenaere, Bertrand Melenberg, and
+  Gijs Rennen.
+\newblock Robust solutions of optimization problems affected by uncertain
+  probabilities.
+\newblock {\em Management Science}, 59(2):341--357, 2013.
+\newblock \url{https://doi.org/10.1287/mnsc.1120.1641}.
+
+\bibitem{calafiore}
+Giuseppe~C. Calafiore.
+\newblock Ambiguous risk measures and optimal robust portfolios.
+\newblock {\em SIAM Journal on Optimization}, 18(3):853--877, 2007.
+\newblock \url{https://doi.org/10.1137/060654803}.
+
+\bibitem{glasserman}
+Paul Glasserman and Xingbo Xu.
+\newblock Robust risk measurement and model risk.
+\newblock {\em Quantitative Finance}, 14(1):29--58, 2014.
+\newblock \url{https://doi.org/10.1080/14697688.2013.822989}.
+
+\bibitem{gaokleywegt}
+Rui Gao and Anton Kleywegt.
+\newblock Distributionally robust stochastic optimization with {Wasserstein}
+  distance.
+\newblock {\em Mathematics of Operations Research}, 48(2):603--655, 2023.
+\newblock \url{https://doi.org/10.1287/moor.2022.1275}.
+
+\bibitem{blanchet}
+Jose Blanchet and Karthyek Murthy.
+\newblock Quantifying distributional model risk via optimal transport.
+\newblock {\em Mathematics of Operations Research}, 44(2):565--600, 2019.
+\newblock \url{https://doi.org/10.1287/moor.2018.0936}.
+
+\bibitem{shafieezadeh}
+Soroosh Shafieezadeh-Abadeh, Daniel Kuhn, and Peyman {Mohajerin Esfahani}.
+\newblock Regularization via mass transportation.
+\newblock {\em Journal of Machine Learning Research}, 20(103):1--68, 2019.
+\newblock \url{https://jmlr.org/papers/v20/17-633.html}.
+
+\bibitem{gaochen}
+Rui Gao, Xi~Chen, and Anton~J. Kleywegt.
+\newblock {Wasserstein} distributionally robust optimization and variation
+  regularization.
+\newblock {\em Operations Research}, 72(3):1177--1191, 2024.
+\newblock \url{https://doi.org/10.1287/opre.2022.2383}.
+
+\bibitem{zhu}
+Shushang Zhu and Masao Fukushima.
+\newblock Worst-case conditional value-at-risk with application to robust
+  portfolio management.
+\newblock {\em Operations Research}, 57(5):1155--1168, 2009.
+\newblock \url{https://doi.org/10.1287/opre.1080.0684}.
+
+\bibitem{pflug}
+Georg Pflug and David Wozabal.
+\newblock Ambiguity in portfolio selection.
+\newblock {\em Quantitative Finance}, 7(4):435--442, 2007.
+\newblock \url{https://doi.org/10.1080/14697680701455410}.
+
+\bibitem{bcz}
+Jose Blanchet, Lin Chen, and Xun~Yu Zhou.
+\newblock Distributionally robust mean-variance portfolio selection with
+  {Wasserstein} distances.
+\newblock {\em Management Science}, 68(9):6382--6410, 2022.
+\newblock \url{https://doi.org/10.1287/mnsc.2021.4155}.
+
+\bibitem{demiguel}
+Victor DeMiguel, Lorenzo Garlappi, and Raman Uppal.
+\newblock Optimal versus naive diversification: How inefficient is the {1/N}
+  portfolio strategy?
+\newblock {\em The Review of Financial Studies}, 22(5):1915--1953, 2009.
+\newblock \url{https://doi.org/10.1093/rfs/hhm075}.
+
+\bibitem{gatheral}
+Jim Gatheral, Thibault Jaisson, and Mathieu Rosenbaum.
+\newblock Volatility is rough.
+\newblock {\em Quantitative Finance}, 18(6):933--949, 2018.
+\newblock \url{https://doi.org/10.1080/14697688.2017.1393551}.
+
+\bibitem{lstm}
+Sepp Hochreiter and J{\"u}rgen Schmidhuber.
+\newblock Long short-term memory.
+\newblock {\em Neural Computation}, 9(8):1735--1780, 1997.
+\newblock \url{https://doi.org/10.1162/neco.1997.9.8.1735}.
+
+\bibitem{andersenbollerslev}
+Torben~G. Andersen and Tim Bollerslev.
+\newblock Answering the skeptics: Yes, standard volatility models do provide
+  accurate forecasts.
+\newblock {\em International Economic Review}, 39(4):885--905, 1998.
+\newblock \url{https://doi.org/10.2307/2527343}.
+
+\bibitem{hansenlunde}
+Peter~R. Hansen and Asger Lunde.
+\newblock A forecast comparison of volatility models: does anything beat a
+  {GARCH(1,1)}?
+\newblock {\em Journal of Applied Econometrics}, 20(7):873--889, 2005.
+\newblock \url{https://doi.org/10.1002/jae.800}.
+
+\bibitem{corsi}
+Fulvio Corsi.
+\newblock A simple approximate long-memory model of realized volatility.
+\newblock {\em Journal of Financial Econometrics}, 7(2):174--196, 2009.
+\newblock \url{https://doi.org/10.1093/jjfinec/nbp001}.
+
+\bibitem{bucci}
+Andrea Bucci.
+\newblock Realized volatility forecasting with neural networks.
+\newblock {\em Journal of Financial Econometrics}, 18(3):502--531, 2020.
+\newblock \url{https://doi.org/10.1093/jjfinec/nbaa008}.
+
+\bibitem{buehler}
+Hans Buehler, Lukas Gonon, Josef Teichmann, and Ben Wood.
+\newblock Deep hedging.
+\newblock {\em Quantitative Finance}, 19(8):1271--1291, 2019.
+\newblock \url{https://doi.org/10.1080/14697688.2019.1571683}.
+
+\bibitem{cohen}
+Samuel~N. Cohen, Christoph Reisinger, and Sheng Wang.
+\newblock Arbitrage-free neural-{SDE} market models.
+\newblock {\em Applied Mathematical Finance}, 30(1):1--46, 2023.
+\newblock \url{https://doi.org/10.1080/1350486X.2023.2257217}.
+
+\bibitem{kilic}
+Rehim Kilic.
+\newblock Linear and nonlinear econometric models versus machine-learning
+  models: Evidence from realized-volatility forecasting.
+\newblock Finance and Economics Discussion Series 2025-061r1, Board of
+  Governors of the Federal Reserve System, 2026.
+\newblock Revised September 2026.
+  \url{https://doi.org/10.17016/FEDS.2025.061r1}.
+
+\bibitem{azencott}
+Robert Azencott and Yutheeka Gadhyan.
+\newblock Accuracy of maximum likelihood parameter estimators for {Heston}
+  volatility {SDE}.
+\newblock arXiv:1403.4893, 2014.
+\newblock \url{https://arxiv.org/abs/1403.4893}.
+
+\bibitem{azencottrealized}
+Robert Azencott, Peng Ren, and Ilya Timofeyev.
+\newblock Realized volatility and parametric estimation of {Heston SDEs}.
+\newblock arXiv:1706.04566, 2017.
+\newblock Revised 2020. \url{https://arxiv.org/abs/1706.04566}.
+
+\bibitem{arulampalam}
+M.~Sanjeev Arulampalam, Simon Maskell, Neil Gordon, and Tim Clapp.
+\newblock A tutorial on particle filters for online nonlinear/non-{Gaussian
+  Bayesian} tracking.
+\newblock {\em IEEE Transactions on Signal Processing}, 50(2):174--188, 2002.
+\newblock \url{https://doi.org/10.1109/78.978374}.
+
+\bibitem{gruszka}
+Jaros{\l}aw Gruszka and Janusz Szwabi{\'n}ski.
+\newblock Parameter estimation of the {Heston} volatility model with jumps in
+  the asset prices.
+\newblock arXiv:2211.14814, 2022.
+\newblock \url{https://arxiv.org/abs/2211.14814}.
+
+\bibitem{lord}
+Roger Lord, Remmert Koekkoek, and Dick van Dijk.
+\newblock A comparison of biased simulation schemes for stochastic volatility
+  models.
+\newblock {\em Quantitative Finance}, 10(2):177--194, 2010.
+\newblock \url{https://doi.org/10.1080/14697680802392496}.
+
+\bibitem{yahoo}
+{Yahoo Finance}.
+\newblock What is the adjusted close?
+\newblock \url{https://in.help.yahoo.com/kb/adjusted-close-sln28256.html}.
+\newblock Accessed 31 October 2026.
+
+\bibitem{cboe}
+{Cboe Global Markets}.
+\newblock Historical data for {Cboe VIX} index and other volatility indices.
+\newblock \url{https://www.cboe.com/tradable-products/vix/vix-historical-data}.
+\newblock Accessed 31 October 2026.
+
+\bibitem{patton}
+Andrew~J. Patton.
+\newblock Volatility forecast comparison using imperfect volatility proxies.
+\newblock {\em Journal of Econometrics}, 160(1):246--256, 2011.
+\newblock \url{https://doi.org/10.1016/j.jeconom.2010.03.034}.
+
+\bibitem{bootstrap}
+Dimitris~N. Politis and Joseph~P. Romano.
+\newblock The stationary bootstrap.
+\newblock {\em Journal of the American Statistical Association},
+  89(428):1303--1313, 1994.
+\newblock \url{https://doi.org/10.1080/01621459.1994.10476870}.
+
+\bibitem{repository}
+Sheehan Mathur.
+\newblock Distributionally-robust-optimization.
+\newblock
+  \url{https://github.com/Sheehan007/Distributionally-Robust-Optimization}.
+\newblock Version 1.0.0; accessed 31 October 2026.
+
+\end{thebibliography}

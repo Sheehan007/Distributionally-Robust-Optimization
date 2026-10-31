@@ -1,0 +1,59 @@
+\section{Literature review}
+\subsection{Risk and distributional ambiguity}
+For a loss $L$ and confidence level $\alpha\in(0,1)$, the Rockafellar--Uryasev representation is
+\begin{equation}
+\CVaR_\alpha^P(L)=\inf_{\eta\in\R}\left\{\eta+\frac{\E_P[(L-\eta)_+]}{1-\alpha}\right\}.
+\label{eq:cvar}
+\end{equation}
+For continuous laws, CVaR is the mean loss in the worst $1-\alpha$ fraction. Empirical distributions require consistent treatment of fractional mass at a quantile. Rounding a tail count arbitrarily can produce a different estimator.
+
+Risk aversion under a specified law and ambiguity aversion over possible laws are distinct. A generic DRO problem is
+\begin{equation}
+\inf_{w\in\W}\sup_{Q\in\mathcal P}\E_Q[\ell(w,R)],
+\end{equation}
+where $\mathcal P$ represents the admissible distributional perturbations. A larger set strengthens the worst-case criterion and can sacrifice nominal performance. Whether this trade-off is useful depends on the set, loss, and data. Surveys and tutorials explain its connections to robust optimization, regularization, and statistical inference \cite{rahimian,kuhn,kuhntutorial}.
+
+\subsection{Families of ambiguity sets}
+\label{sec:families}
+Moment-based sets constrain quantities such as means and covariances. Delage and Ye account for uncertainty in estimated moments and derive tractable formulations for important problem classes \cite{delage}. Such sets are useful when moment information is defensible, but results depend on the distributional freedom left by those restrictions.
+
+Divergence-based sets bound a discrepancy from a nominal law. On finite scenario support, a $\phi$-divergence set takes the form
+\begin{equation}
+\mathcal P_\phi=\left\{q\in\Delta_N:\sum_i p_i\phi(q_i/p_i)\leq\delta\right\}.
+\end{equation}
+Ben-Tal et al. study uncertain probabilities and tractable robust counterparts for several choices \cite{bental}; Calafiore applies related discrete-distribution ambiguity to robust portfolio risk measures \cite{calafiore}, and Glasserman and Xu use relative-entropy neighborhoods to bound model risk \cite{glasserman}. In this representation, uncertainty reweights scenarios. It does not introduce a crash outcome missing from the selected support. Other divergence constructions can instead have continuous nominal distributions.
+
+Optimal transport allows probability mass to move in the sample space at a cost. Under the absolute-value metric,
+\begin{equation}
+W_1(Q,P)=\inf_{\pi\in\Pi(Q,P)}\int |r-r'|\,\pi(dr,dr'),
+\end{equation}
+where $\Pi(Q,P)$ denotes couplings. A Wasserstein ball may therefore include outcomes outside an empirical support. Mohajerin Esfahani and Kuhn establish data-driven guarantees and convex reformulations \cite{esfahani}; Gao and Kleywegt derive strong duality for general transport costs \cite{gaokleywegt}; and Blanchet and Murthy develop a transport perspective on model risk \cite{blanchet}. A recurring theme is that Wasserstein robustness is equivalent, or close, to Lipschitz or variation regularization of the loss \cite{shafieezadeh,gaochen}. These results motivate the model below, subject to its support and sampling assumptions.
+
+\begin{table}[t]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{Ambiguity-set families used in portfolio DRO. Divergence refers to $\phi$-divergence sets on finite support. ``Support'' indicates whether worst-case laws may place mass on outcomes absent from the nominal law.}
+\label{tab:families}
+\begin{tabular}{@{}>{\raggedright}p{1.35cm}>{\raggedright}p{1.8cm}>{\raggedright}p{1.35cm}>{\raggedright\arraybackslash}p{2.50cm}@{}}\toprule
+Family&Uncertain quantity&Support&Portfolio examples\\\midrule
+Moment&Means, covariances&Any law matching moments&Delage and Ye \cite{delage}; worst-case CVaR \cite{zhu}\\
+Divergence&Scenario probabilities&Nominal only&Ben-Tal et al.\ \cite{bental}; Calafiore \cite{calafiore}\\
+Wasserstein&Outcome locations and probabilities&May extend beyond nominal&Pflug and Wozabal \cite{pflug}; Mohajerin Esfahani and Kuhn \cite{esfahani}; Blanchet et al.\ \cite{bcz}\\\bottomrule
+\end{tabular}
+\end{table}
+
+No ambiguity family is uniformly preferable (Table~\ref{tab:families}). Moment sets express uncertainty about moments; finite-support divergence sets change scenario probabilities; transport sets impose a geometry on outcome changes. In particular, a radius of $0.001$ has different meaning for daily returns, monthly returns, or standardized features. Its units are part of the model.
+
+\subsection{Financial applications and tail risk}
+Worst-case CVaR portfolio optimization is well established. Zhu and Fukushima examine mixture, box, and ellipsoidal uncertainty, obtaining linear and second-order cone formulations \cite{zhu}. Pflug and Wozabal were among the first to use Kantorovich--Wasserstein balls for portfolio selection \cite{pflug}; Wasserstein mean-risk portfolios are studied in \cite{esfahani}; and Blanchet, Chen, and Zhou derive Wasserstein-robust mean--variance portfolios with a data-driven radius \cite{bcz}. Coupling a robust CVaR layer to a scenario generator therefore does not, by itself, constitute a new method.
+
+Economic interpretation requires more than minimizing a risk statistic. A smaller drawdown may result from holding more cash, without better forecasting or timing. DeMiguel, Garlappi, and Uppal show that optimized portfolios often fail to beat naive $1/N$ allocation out of sample once estimation error is accounted for \cite{demiguel}. Comparisons should therefore disclose exposure and include simple allocations. A model can reduce expected shortfall while losing compound return or performing worse at similar exposure. The experiment explicitly examines these possibilities.
+
+\subsection{Volatility and neural finance}
+Heston dynamics describe a latent variance state; return--variance correlation affects asymmetry, while mean reversion controls variance persistence. The original option-pricing model uses a risk-neutral measure. Asset allocation needs a physical predictive law. Using a risk-neutral drift or treating an option calibration as a physical forecast requires additional justification. Rough-volatility evidence further suggests that a single Markovian variance factor is a simplification \cite{gatheral}.
+
+LSTM networks learn temporal dependencies \cite{lstm}, but flexibility alone does not establish forecast value. Volatility forecasting has a long tradition of hard-to-beat simple models: Andersen and Bollerslev show that apparently poor forecasts often reflect noisy proxies \cite{andersenbollerslev}, and Hansen and Lunde find that parsimonious GARCH specifications are difficult to outperform in several settings \cite{hansenlunde}. Corsi's HAR-RV combines volatility components over different horizons \cite{corsi}, and neural networks trained on realized measures can improve on it \cite{bucci}. Persistence and parsimonious regressions are therefore necessary benchmarks. Our regression borrows the HAR structure for a rolling daily-return proxy, rather than reproducing the original intraday realized-variance estimator.
+
+Other neural finance methods address different tasks. Deep hedging optimizes hedges under trading frictions \cite{buehler}, and arbitrage-free neural-SDE market models learn constrained option-market dynamics \cite{cohen}. These works provide context for learning with financial structure. Their findings do not validate the simpler state substitution studied here. The review is selective, guided by the experiment and representative surveys, rather than an exhaustive or systematic survey.
+
+
+Recent comparative evidence also emphasizes horizon-specific econometric benchmarks rather than assuming that machine learning dominates \cite{kilic}. Estimation of physical-measure stochastic-volatility dynamics is a separate inference task: approximate likelihood and observable-moment approaches have their own sampling and proxy limitations \cite{azencott,azencottrealized}. Particle-filter approaches explicitly treat the variance as latent \cite{arulampalam,gruszka}. The present implementation uses these established ideas in a constrained numerical study.

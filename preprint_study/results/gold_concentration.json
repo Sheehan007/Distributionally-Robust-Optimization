@@ -1,0 +1,8 @@
+{
+  "year": 2025,
+  "strategy": "Historical CVaR",
+  "mean_gold_weight": 0.9016718646498585,
+  "median_gold_weight": 0.9386433257964113,
+  "mean_effective_assets": 1.2132054415946678,
+  "signals": 49
+}

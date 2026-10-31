@@ -1,0 +1,22 @@
+[
+  {
+    "ticker": "SPY",
+    "rows": 1759,
+    "max_numeric_difference": 0.0
+  },
+  {
+    "ticker": "IWM",
+    "rows": 1759,
+    "max_numeric_difference": 0.0
+  },
+  {
+    "ticker": "TLT",
+    "rows": 1759,
+    "max_numeric_difference": 0.0
+  },
+  {
+    "ticker": "GLD",
+    "rows": 1759,
+    "max_numeric_difference": 0.0
+  }
+]

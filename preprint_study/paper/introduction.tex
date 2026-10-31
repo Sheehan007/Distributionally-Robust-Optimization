@@ -1,0 +1,32 @@
+\begin{center}\large\bfseries Abstract\end{center}
+\noindent\textit{Distributionally robust optimization (DRO) addresses uncertainty about a return law in addition to risk under that law. This paper reviews established DRO methods and evaluates a reproducible portfolio pipeline without claiming a new optimization method. A persistence-anchored residual LSTM predicts changes in log rolling volatility. Physical Heston parameters are fitted annually to past returns using a latent-variance particle likelihood. A four-ETF mean-CVaR problem combines a Wasserstein penalty with quadratic risk. A preliminary single-asset analysis over 2019--2024 motivated the design, so that period is exploratory; 2025 supplies a separate retrospective confirmation period. Residual forecasting lowers RMSE against persistence by 16--21\% in exploration and 22--29\% in confirmation, although a simple rolling-window update remains competitive. Fitted Heston models have mixed predictive likelihood gains. A matched 20,000-scenario comparison under three independent seeds reduces Monte Carlo variation below the average robustness tilt, while robust-versus-nominal return differences remain statistically inconclusive. Strong 2025 performance is interpreted in light of a gold rally and concentrated gold holdings in a historical benchmark. A cash-enabled comparison separates asset composition from de-risking. The public release provides code, model records, aggregate results, and input hashes; numerical replication is conditional on access to matching provider inputs.}
+\par\vspace{7pt}
+\noindent\textbf{Keywords:} distributionally robust optimization; stochastic volatility; residual learning; Heston calibration; conditional value-at-risk; multi-asset portfolios.
+
+\section{Introduction}
+Portfolio decisions depend on an estimated distribution of future returns. Risk criteria summarize losses under that distribution, whereas distributionally robust optimization (DRO) evaluates specified perturbations of the distribution itself. A flexible volatility model and a conservative decision criterion address different parts of this problem. Combining them is therefore a modeling choice to validate, rather than evidence of improved investment performance.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=4mm,box/.style={draw,rounded corners=1pt,align=center,text width=6.55cm,inner sep=4pt,font=\small},half/.style={draw,align=center,text width=3.0cm,inner sep=3pt,font=\small},arr/.style={-{Latex[length=2mm]},thick}]
+\node[box] (a) {Information after close $t$\\Past ETF prices and VIX};
+\node[half,anchor=north] (b) at ([xshift=-17mm,yshift=-5mm]a.south) {Residual forecast\\Persistence plus\\learned change};
+\node[half,anchor=north] (c) at ([xshift=17mm,yshift=-5mm]a.south) {Physical Heston model\\Past-return particle\\likelihood};
+\node[box,below=24mm of a] (d) {Correlated multi-asset scenarios\\Common estimated drifts and price-shock dependence};
+\node[box,below=of d] (e) {Convex mean--CVaR allocation\\Wasserstein penalty and quadratic risk};
+\node[box,below=of e] (f) {Next-open four-ETF holdings\\Daily wealth, trading costs, and diversification};
+\draw[arr] (a)--(b);\draw[arr] (a)--(c);\draw[arr] (b)--(d);\draw[arr] (c)--(d);\draw[arr] (d)--(e);\draw[arr] (e)--(f);
+\end{tikzpicture}
+\caption{The computational pipeline. Forecasting, parameter estimation, and optimization have separate benchmarks and diagnostics. The primary portfolio is fully invested, which holds gross exposure constant across model variants.}
+\label{fig:pipeline}
+\end{figure}
+
+Mean--variance analysis organizes portfolio choices through expected returns and covariances \cite{markowitz}. Its formulation does not require normal returns, although those moments need not capture all downside preferences. CVaR makes tail losses explicit \cite{rockafellar}, while a Wasserstein ambiguity set specifies a geometry for changes in outcomes \cite{esfahani}. Stochastic-volatility dynamics describe time-varying dispersion; they do not eliminate distributional misspecification.
+
+This paper develops a study project on these established components as a selective review and reproducible experiment. Three design choices are central. First, a neural forecast should demonstrate value beyond the persistence already present in its target. Second, stochastic-volatility parameters should be estimated from historically available data rather than treated as universal constants. Third, a portfolio experiment should distinguish diversification from a scalar switch between equity and cash.
+
+We address these questions with a residual forecast, a fitted latent-variance model, and a four-asset convex allocation problem. The forecast includes an identity path, a zero-initialized correction head, and a validation-only shrinkage rule. The Heston likelihood conditions variance transitions on observed returns, retaining leverage. The allocation includes an explicit positive-definite quadratic risk term and uses a Euclidean transport metric, so robustness depends on the vector of weights. No per-asset cap forces diversification.
+
+A preliminary single-asset analysis over 2019--2024 motivated the design, so that period is labeled exploratory. Economic coefficients were fixed before the multi-asset outcomes were inspected. A separately specified 2025 sample is a retrospective confirmation period, not a publicly preregistered prospective trial. Numerical accuracy is assessed through tighter likelihood searches and matched 20,000-scenario allocation runs under three independent seeds. Those checks do not select economic settings by future performance.
+
+The main findings are qualified. Residual prediction substantially improves the neural comparison with persistence, but a mechanical rolling-window baseline explains much of the available target predictability. Estimated Heston parameters vary across assets and years, yet their predictive likelihood gains are mixed. Multi-asset allocations permit diversification at fixed exposure. A higher-scenario comparison reduces simulation variation, while incremental DRO return effects remain small and statistically uncertain. These findings support an educational synthesis rather than an algorithmic novelty or universal performance claim.

@@ -1,0 +1,30 @@
+{
+  "title": "Distributionally Robust Portfolio Choice under Stochastic Volatility: Computational Study",
+  "creators": [
+    {
+      "name": "Mathur, Sheehan",
+      "affiliation": "Birla Institute of Technology and Science Pilani, Dubai Campus"
+    }
+  ],
+  "version": "1.0.0",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "mit",
+  "language": "eng",
+  "description": "Public computational record for a selective review and study of established DRO methods under stochastic volatility. Includes residual-LSTM checkpoints, annual physical Heston fits, convex four-ETF allocation code, aggregate diagnostics, and canonical input hashes. Provider market observations and raw responses are excluded. Exact numerical replication is conditional on lawful access to matching inputs. The software is MIT licensed; the accompanying manuscript, author-created research figures and tables are separately CC BY 4.0.",
+  "keywords": [
+    "distributionally robust optimization",
+    "stochastic volatility",
+    "Heston",
+    "CVaR",
+    "portfolio allocation",
+    "reproducible research"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/Sheehan007/Distributionally-Robust-Optimization/tree/v1.0.0",
+      "relation": "isIdenticalTo",
+      "scheme": "url"
+    }
+  ]
+}

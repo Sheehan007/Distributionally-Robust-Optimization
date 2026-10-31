@@ -3,3 +3,14 @@ __pycache__/
 .DS_Store
 smoke_outputs/
 smoke_outputs_full/
+.venv/
+tmp/
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.blg
+paper/*.synctex.gz
+
+/paper/
+
+/output/

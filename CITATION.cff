@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "Please cite the versioned software archive and the accompanying study."
+title: "Distributionally Robust Portfolio Choice under Stochastic Volatility: Computational Study"
+type: software
+authors:
+  - family-names: Mathur
+    given-names: Sheehan
+    affiliation: "Birla Institute of Technology and Science Pilani, Dubai Campus"
+version: 1.0.0
+date-released: 2026-10-31
+url: "https://github.com/Sheehan007/Distributionally-Robust-Optimization/releases/tag/v1.0.0"
+repository-code: "https://github.com/Sheehan007/Distributionally-Robust-Optimization"
+license: MIT
+keywords:
+  - distributionally robust optimization
+  - stochastic volatility
+  - portfolio allocation
+  - reproducible research

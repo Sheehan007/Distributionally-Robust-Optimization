@@ -1,0 +1,37 @@
+{
+  "retrieval_utc": "2026-10-31T06:50:21.936215+00:00",
+  "sources": {
+    "SPY.csv": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=1325376000&period2=1767225600&interval=1d",
+    "IWM.csv": "https://query1.finance.yahoo.com/v8/finance/chart/IWM?period1=1325376000&period2=1767225600&interval=1d",
+    "TLT.csv": "https://query1.finance.yahoo.com/v8/finance/chart/TLT?period1=1325376000&period2=1767225600&interval=1d",
+    "GLD.csv": "https://query1.finance.yahoo.com/v8/finance/chart/GLD?period1=1325376000&period2=1767225600&interval=1d",
+    "VIX.csv": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv"
+  },
+  "file_retrieval_utc": {
+    "SPY.csv": "2026-10-31T06:50:21.936215+00:00",
+    "IWM.csv": "2026-10-31T06:50:21.936215+00:00",
+    "TLT.csv": "2026-10-31T06:50:21.936215+00:00",
+    "GLD.csv": "2026-10-31T06:50:21.936215+00:00",
+    "VIX.csv": "2026-10-31T03:06:13.653247+00:00"
+  },
+  "note": "Open/High/Low/Close multiplied by adjusted-close/close factor; total-return proxy, not literal executable quotes.",
+  "hashes": {
+    "GLD.csv": "5442c12b87d0aeac6f756e6c4c1bfa4baf0675d40414f4fc7b4fe928d30cfa50",
+    "GLD_raw.json": "9c9d2facef4f2fee0793aa89cd9be62274614f3d41cef2d0e31b2edb1acf277f",
+    "IWM.csv": "ae2d056bf8218b2a2179053bca924c87c74f99b9518d7405eb4c68d25cdc2d64",
+    "IWM_raw.json": "e0cd882f9fe4c325e103742f811ec08ec68b6e5cd8743f3cebc8a9e530cd8b68",
+    "SPY.csv": "1ab2c97314abc59eb658de506948f7062fa1576aec353b222fe1ae192b2e134f",
+    "SPY_raw.json": "07e8a1ab925f0e7e23e890cf7823473615cba0b804e0d47cb20ab9e70999ce0b",
+    "TLT.csv": "0c625ad385289573f36218382a912967b63719b823e86091e4f5f8d9d306a4cb",
+    "TLT_raw.json": "3331638d0d7f890d672dc157601dfc10e5341b7badda6cbac9834e484201a16e",
+    "VIX.csv": "a5409500cdb8fdd86ba926dcfc7de5b1a54d365d4b7850a1a50c803ae57fddd1"
+  },
+  "canonical_sha256": {
+    "SPY": "2a1e7f115d79b51640022fa9347c7faf6873e39127100b929957dcac9ad73901",
+    "IWM": "263fbf79bf2793933cde08bf7254821223e8633e3dcce3043350d0b7596ef61e",
+    "TLT": "7a6afdc92cada99c9ec20d4510f8bfe4f21437cc72fd20fe8c23d1f035d06444",
+    "GLD": "8fab2a9cc2691973c63f804dfebf7deff95ea6dbf8471ccab350c00a891b44e9",
+    "VIX_aligned": "1f6df508da6478d936cbc1b3a611dda03e3eb969a02af5faf37259d499a4fa3f"
+  },
+  "distribution": "Hashes and source metadata only. Provider observations and raw responses are excluded from public artifacts."
+}
