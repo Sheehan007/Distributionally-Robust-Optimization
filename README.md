@@ -9,6 +9,7 @@ algorithm.
 - [Paper source](preprint_study/paper/main.tex)
 - [Study code, requirements, and reproduction commands](preprint_study/README.md)
 - [Provider-data access and redistribution policy](preprint_study/DATA_ACCESS.md)
+- [Zenodo software archive](https://doi.org/10.5281/zenodo.23832468)
 - [Software citation](CITATION.cff)
 
 The public record includes 168 trained neural checkpoints, 28 annual Heston

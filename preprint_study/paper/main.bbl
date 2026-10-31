@@ -246,4 +246,11 @@ Sheehan Mathur.
   \url{https://github.com/Sheehan007/Distributionally-Robust-Optimization}.
 \newblock Version 1.0.0; accessed 31 October 2026.
 
+\bibitem{softwarearchive}
+Sheehan Mathur.
+\newblock Distributionally robust portfolio choice under stochastic volatility:
+  Computational study.
+\newblock Zenodo, software version 1.0.0, 2026.
+\newblock \url{https://doi.org/10.5281/zenodo.23832468}.
+
 \end{thebibliography}

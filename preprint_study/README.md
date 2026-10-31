@@ -7,6 +7,7 @@ Volatility: A Review and Reproducible Multi-Asset Study**.
 
 [Public repository](https://github.com/Sheehan007/Distributionally-Robust-Optimization)
 · [Versioned release](https://github.com/Sheehan007/Distributionally-Robust-Optimization/releases/tag/v1.0.0)
+· [Zenodo archive](https://doi.org/10.5281/zenodo.23832468)
 · [Manuscript source](paper/main.tex)
 
 This is a selective review and computational study of established methods,

@@ -23,9 +23,10 @@ Public repository: https://github.com/Sheehan007/Distributionally-Robust-Optimiz
 
 Numerical software release: https://github.com/Sheehan007/Distributionally-Robust-Optimization/releases/tag/v1.0.0
 
-Zenodo GitHub archiving is enabled on the author's account. The record DOI is
-added after successful processing; a reserved or guessed DOI is not presented
-as a public archive. Software is MIT licensed; manuscript/figures/tables are
+Zenodo published the software archive as version 1.0.0:
+https://doi.org/10.5281/zenodo.23832468
+The public record, author, licence, version, and downloadable archive were
+verified after GitHub release processing. Software is MIT licensed; manuscript/figures/tables are
 CC BY 4.0, with provider data excluded from both grants.
 
 ## Submission preparation
